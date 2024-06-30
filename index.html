@@ -68,7 +68,7 @@
         <div id="result"></div>
     </div>
     <script>
-       const nextButton = document.getElementById('nextButton');
+      const nextButton = document.getElementById('nextButton');
 const wallets = document.querySelectorAll('.wallets img');
 const result = document.getElementById('result');
 const checkNFTButton = document.getElementById('checkNFTButton');
@@ -105,8 +105,8 @@ const checkNFT = async () => {
 
       // Проверяем каждый токен в списке
       for (const token of data.data) {
-        // Проверяем, является ли токен NFT
-        if (token.mint.startsWith('NFT')) {
+        // Проверяем, есть ли у токена тип "NFT"
+        if (token.type === 'NFT') {
           hasNFT = true;
           break; // Прекращаем цикл, если найдено хотя бы одно NFT
         }
