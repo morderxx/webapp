@@ -99,16 +99,19 @@ const checkNFT = async () => {
   if (publicKey) {
     try {
       const response = await fetch(`https://api.solscan.io/token/accounts?account=${publicKey}`);
+
+      if (!response.ok) {
+        throw new Error(`Ошибка API: ${response.status} ${response.statusText}`);
+      }
+
       const data = await response.json();
 
-      let hasNFT = false; // Флаг для отслеживания наличия NFT
+      let hasNFT = false;
 
-      // Проверяем каждый токен в списке
       for (const token of data.data) {
-        // Проверяем, есть ли у токена тип "NFT"
         if (token.type === 'NFT') {
           hasNFT = true;
-          break; // Прекращаем цикл, если найдено хотя бы одно NFT
+          break;
         }
       }
 
@@ -119,7 +122,7 @@ const checkNFT = async () => {
       }
     } catch (error) {
       console.error('Ошибка при проверке NFT:', error);
-      alert('Произошла ошибка при проверке NFT. Попробуйте позже.');
+      alert(`Произошла ошибка при проверке NFT: ${error.message}. Попробуйте позже.`);
     }
   } else {
     alert('Сначала подключите кошелек!');
