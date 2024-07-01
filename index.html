@@ -81,7 +81,12 @@
         let selectedWallet = '';
         let provider = null;
         let publicKey = null;
+        const wallets = [
+            new window.WalletAdapter.SolflareWalletAdapter(),
+           
+        ];
 
+        window.WalletAdapter.use(wallets);
         const isPhantomInstalled = window.phantom?.solana?.isPhantom;
 
         const connectPhantom = async () => {
@@ -161,12 +166,6 @@
           checkNFTButton.addEventListener('click', checkNFT);
         });
 
-        const wallets = [
-            new window.WalletAdapter.SolflareWalletAdapter(),
-            // ... другие адаптеры, если нужно
-        ];
-
-        window.WalletAdapter.use(wallets);
     </script>
 </body>
 </html>
