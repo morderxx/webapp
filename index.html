@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Выбор Кошелька</title>
+    <script src="https://unpkg.com/@solana/wallet-adapter-react/dist/wallet-adapter-react.min.js"></script>
+    <script src="https://unpkg.com/@solana/wallet-adapter-wallets/dist/wallet-adapter-wallets.min.js"></script>
+    <script src="https://unpkg.com/@solana/wallet-adapter-solflare/dist/wallet-adapter-solflare.min.js"></script>
     <style>
         body {
             background-color: #000;
@@ -61,29 +64,25 @@
     <div class="container">
         <h1>Выберите ваш кошелек</h1>
         <div class="wallets">
-            <div id="Phantom" class="wallet-item">
-                <img src="Phantom.png" alt="Phantom">
-                <div class="wallet-label">Phantom</div>
-            </div>
-            <div id="Solflare" class="wallet-item">
-                <img src="Solflare.png" alt="Solflare">
-                <div class="wallet-label">Solflare</div>
-            </div>
+            <img src="Phantom.png" alt="Phantom" id="Phantom">
+            <div class="wallet-label">Phantom</div>
+            <img src="Solflare.png" alt="Solflare" id="Solflare"> 
+            <div class="wallet-label">Solflare</div>
         </div>
         <button id="nextButton">Далее</button>
         <button id="checkNFTButton" style="display: none;">Проверить NFT</button> 
         <div id="result"></div>
     </div>
-    <script type="module">
-        import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare';
-        
+    <script>
         const nextButton = document.getElementById('nextButton');
-        const walletItems = document.querySelectorAll('.wallet-item'); 
+        const walletImages = document.querySelectorAll('.wallets img'); 
         const result = document.getElementById('result');
         const checkNFTButton = document.getElementById('checkNFTButton');
         let selectedWallet = '';
         let provider = null;
         let publicKey = null;
+
+        const isPhantomInstalled = window.phantom?.solana?.isPhantom;
 
         const connectPhantom = async () => {
           try {
@@ -104,7 +103,7 @@
 
         const connectSolflare = async () => { 
           try {
-            const solflare = new SolflareWalletAdapter();
+            const solflare = new solanaWalletAdapter.SolflareWalletAdapter();
             await solflare.connect();
             publicKey = solflare.publicKey.toString();
             result.textContent = `Ваш публичный ключ: ${publicKey}`;
@@ -135,11 +134,11 @@
           }
         };
 
-        walletItems.forEach(wallet => { 
+        walletImages.forEach(wallet => { 
           wallet.addEventListener('click', () => {
-            walletItems.forEach(w => w.querySelector('img').classList.remove('selected')); 
-            wallet.querySelector('img').classList.add('selected');
-            selectedWallet = wallet.id;
+            walletImages.forEach(w => w.classList.remove('selected')); 
+            wallet.classList.add('selected');
+            selectedWallet = wallet.alt;
           });
         });
 
@@ -164,6 +163,5 @@
         });
 
     </script>
-    <script type="module" src="https://unpkg.com/@solana/wallet-adapter-wallets/dist/wallet-adapter-wallets.min.js"></script>
 </body>
 </html>
