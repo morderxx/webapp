@@ -24,9 +24,9 @@
         }
 
         .wallets {
-            display: flex; /* Изменяем на flex для горизонтальной компоновки */
-            flex-direction: column; /* Вертикальное выравнивание */
-            align-items: center; /* Выравнивание по центру */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             margin-bottom: 20px;
         }
 
@@ -36,7 +36,7 @@
             border: 2px solid transparent;
             border-radius: 10px;
             cursor: pointer;
-            margin-bottom: 10px; /* Добавляем отступ снизу */
+            margin-bottom: 10px;
         }
 
         .wallets img.selected {
@@ -79,8 +79,6 @@
         let provider = null;
         let publicKey = null;
 
-        const isPhantomInstalled = window.phantom?.solana?.isPhantom;
-
         const connectPhantom = async () => {
           try {
             provider = window.phantom.solana;
@@ -100,9 +98,10 @@
 
         const connectSolflare = async () => { 
           try {
-            // Подключаем Solflare Wallet Adapter
-            await window.WalletAdapter.connect(); 
-            publicKey = window.WalletAdapter.publicKey.toString();
+            const { SolflareWalletAdapter } = solanaWalletAdapterWallets;
+            const solflare = new SolflareWalletAdapter();
+            await solflare.connect();
+            publicKey = solflare.publicKey.toString();
             result.textContent = `Ваш публичный ключ: ${publicKey}`;
             checkNFTButton.style.display = 'inline-block';
           } catch (error) {
@@ -159,10 +158,7 @@
           checkNFTButton.addEventListener('click', checkNFT);
         });
 
-        // Удалили эту строку: window.WalletAdapter.use(wallets);  
     </script>
-    <script src="https://unpkg.com/@solana/wallet-adapter-react/dist/wallet-adapter-react.min.js"></script>
     <script src="https://unpkg.com/@solana/wallet-adapter-wallets/dist/wallet-adapter-wallets.min.js"></script>
-    <script src="https://unpkg.com/@solana/wallet-adapter-solflare/dist/wallet-adapter-solflare.min.js"></script>
 </body>
 </html>
