@@ -70,7 +70,9 @@
         <button id="checkNFTButton" style="display: none;">Проверить NFT</button> 
         <div id="result"></div>
     </div>
-    <script>
+    <script type="module">
+        import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare';
+        
         const nextButton = document.getElementById('nextButton');
         const walletImages = document.querySelectorAll('.wallets img'); 
         const result = document.getElementById('result');
@@ -98,7 +100,6 @@
 
         const connectSolflare = async () => { 
           try {
-            const { SolflareWalletAdapter } = solanaWalletAdapterWallets;
             const solflare = new SolflareWalletAdapter();
             await solflare.connect();
             publicKey = solflare.publicKey.toString();
@@ -159,6 +160,6 @@
         });
 
     </script>
-    <script src="https://unpkg.com/@solana/wallet-adapter-wallets/dist/wallet-adapter-wallets.min.js"></script>
+    <script type="module" src="https://unpkg.com/@solana/wallet-adapter-wallets/dist/wallet-adapter-wallets.min.js"></script>
 </body>
 </html>
