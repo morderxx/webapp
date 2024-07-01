@@ -24,9 +24,9 @@
         }
 
         .wallets {
-            display: flex; /* Изменяем на flex для горизонтальной компоновки */
-            flex-direction: column; /* Вертикальное выравнивание */
-            align-items: center; /* Выравнивание по центру */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             margin-bottom: 20px;
         }
 
@@ -36,7 +36,7 @@
             border: 2px solid transparent;
             border-radius: 10px;
             cursor: pointer;
-            margin-bottom: 10px; /* Добавляем отступ снизу */
+            margin-bottom: 10px;
         }
 
         .wallets img.selected {
@@ -61,32 +61,36 @@
     <div class="container">
         <h1>Выберите ваш кошелек</h1>
         <div class="wallets">
-            <img src="Phantom.png" alt="Phantom" id="Phantom">
-            <div class="wallet-label">Phantom</div>
-            <img src="Solflare.png" alt="Solflare" id="Solflare"> 
-            <div class="wallet-label">Solflare</div>
+            <div id="Phantom" class="wallet-item">
+                <img src="Phantom.png" alt="Phantom">
+                <div class="wallet-label">Phantom</div>
+            </div>
+            <div id="Solflare" class="wallet-item">
+                <img src="Solflare.png" alt="Solflare">
+                <div class="wallet-label">Solflare</div>
+            </div>
         </div>
         <button id="nextButton">Далее</button>
         <button id="checkNFTButton" style="display: none;">Проверить NFT</button> 
         <div id="result"></div>
     </div>
-    <script>
+    <script type="module">
+        import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare';
+        
         const nextButton = document.getElementById('nextButton');
-        const walletImages = document.querySelectorAll('.wallets img'); 
+        const walletItems = document.querySelectorAll('.wallet-item'); 
         const result = document.getElementById('result');
         const checkNFTButton = document.getElementById('checkNFTButton');
         let selectedWallet = '';
         let provider = null;
         let publicKey = null;
 
-        const isPhantomInstalled = window.phantom?.solana?.isPhantom;
-
         const connectPhantom = async () => {
           try {
             provider = window.phantom.solana;
             await provider.connect();
             publicKey = provider.publicKey.toString();
-            result.textContent = Ваш публичный ключ: ${publicKey};
+            result.textContent = `Ваш публичный ключ: ${publicKey}`;
             checkNFTButton.style.display = 'inline-block';
           } catch (error) {
             if (error.code === 4001) {
@@ -100,10 +104,10 @@
 
         const connectSolflare = async () => { 
           try {
-            // Подключаем Solflare Wallet Adapter
-            await window.WalletAdapter.connect(); 
-            publicKey = window.WalletAdapter.publicKey.toString();
-            result.textContent = Ваш публичный ключ: ${publicKey};
+            const solflare = new SolflareWalletAdapter();
+            await solflare.connect();
+            publicKey = solflare.publicKey.toString();
+            result.textContent = `Ваш публичный ключ: ${publicKey}`;
             checkNFTButton.style.display = 'inline-block';
           } catch (error) {
             console.error('Ошибка при подключении к Solflare:', error);
@@ -114,7 +118,7 @@
         const checkNFT = async () => {
           if (publicKey) {
             try {
-              const response = await fetch(http://localhost:3000/check-nft?publicKey=${publicKey});
+              const response = await fetch(`http://localhost:3000/check-nft?publicKey=${publicKey}`);
               const data = await response.json();
 
               if (data.hasNFT) {
@@ -124,18 +128,18 @@
               }
             } catch (error) {
               console.error('Ошибка при проверке NFT:', error);
-              alert(Произошла ошибка при проверке NFT: ${error.message}. Попробуйте позже.);
+              alert(`Произошла ошибка при проверке NFT: ${error.message}. Попробуйте позже.`);
             }
           } else {
             alert('Сначала подключите кошелек!');
           }
         };
 
-        walletImages.forEach(wallet => { 
+        walletItems.forEach(wallet => { 
           wallet.addEventListener('click', () => {
-            walletImages.forEach(w => w.classList.remove('selected')); 
-            wallet.classList.add('selected');
-            selectedWallet = wallet.alt;
+            walletItems.forEach(w => w.querySelector('img').classList.remove('selected')); 
+            wallet.querySelector('img').classList.add('selected');
+            selectedWallet = wallet.id;
           });
         });
 
@@ -150,7 +154,7 @@
           } else if (selectedWallet === 'Solflare') { 
             await connectSolflare(); 
           } else {
-            result.textContent = Вы выбрали кошелек: ${selectedWallet};
+            result.textContent = `Вы выбрали кошелек: ${selectedWallet}`;
           }
         });
 
@@ -159,10 +163,7 @@
           checkNFTButton.addEventListener('click', checkNFT);
         });
 
-        // Удалили эту строку: window.WalletAdapter.use(wallets);  
     </script>
-    <script src="https://unpkg.com/@solana/wallet-adapter-react/dist/wallet-adapter-react.min.js"></script>
-    <script src="https://unpkg.com/@solana/wallet-adapter-wallets/dist/wallet-adapter-wallets.min.js"></script>
-    <script src="https://unpkg.com/@solana/wallet-adapter-solflare/dist/wallet-adapter-solflare.min.js"></script>
+    <script type="module" src="https://unpkg.com/@solana/wallet-adapter-wallets/dist/wallet-adapter-wallets.min.js"></script>
 </body>
 </html>
