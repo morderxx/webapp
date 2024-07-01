@@ -75,18 +75,13 @@
     </div>
       <script>
         const nextButton = document.getElementById('nextButton');
-        const wallets = document.querySelectorAll('.wallets img');
+        const walletImages = document.querySelectorAll('.wallets img'); // Изменили имя переменной
         const result = document.getElementById('result');
         const checkNFTButton = document.getElementById('checkNFTButton');
         let selectedWallet = '';
         let provider = null;
         let publicKey = null;
-        const wallets = [
-            new window.WalletAdapter.SolflareWalletAdapter(),
-           
-        ];
 
-        window.WalletAdapter.use(wallets);
         const isPhantomInstalled = window.phantom?.solana?.isPhantom;
 
         const connectPhantom = async () => {
@@ -138,9 +133,9 @@
           }
         };
 
-        wallets.forEach(wallet => {
+        walletImages.forEach(wallet => { // Изменили имя переменной
           wallet.addEventListener('click', () => {
-            wallets.forEach(w => w.classList.remove('selected'));
+            walletImages.forEach(w => w.classList.remove('selected')); 
             wallet.classList.add('selected');
             selectedWallet = wallet.alt;
           });
@@ -166,6 +161,12 @@
           checkNFTButton.addEventListener('click', checkNFT);
         });
 
+        const wallets = [
+            new window.WalletAdapter.SolflareWalletAdapter(),
+           
+        ];
+
+        window.WalletAdapter.use(wallets);
     </script>
 </body>
 </html>
