@@ -86,6 +86,7 @@
         let publicKey = null;
 
         const isPhantomInstalled = window.phantom?.solana?.isPhantom;
+        const isBackpackInstalled = window.backpack?.solana?.isBackpack;
 
         const connectPhantom = async () => {
           try {
@@ -119,14 +120,18 @@
 
         const connectBackpack = async () => { 
           try {
-            const backpack = new solanaWalletAdapter.BackpackWalletAdapter();
-            await backpack.connect();
-            publicKey = backpack.publicKey.toString();
+            provider = window.backpack.solana;
+            await provider.connect();
+            publicKey = provider.publicKey.toString();
             result.textContent = `Ваш публичный ключ: ${publicKey}`;
             checkNFTButton.style.display = 'inline-block';
           } catch (error) {
-            console.error('Ошибка при подключении к Backpack:', error);
-            alert('Ошибка при подключении к Backpack. Попробуйте перезагрузить страницу.');
+            if (error.code === 4001) {
+              alert('Вы отказались предоставить доступ к ключу.');
+            } else {
+              console.error('Ошибка при подключении к Backpack:', error);
+              alert('Ошибка при подключении к Backpack. Попробуйте перезагрузить страницу.');
+            }
           }
         };
 
