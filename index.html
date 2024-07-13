@@ -82,7 +82,41 @@ emptiness, [13.07.2024 13:50]
         let selectedWallet = '';
         let provider = null;
         let publicKey = null;
+    import Backpack from '@backpack-js/backpack';
 
+    const backpackButton = document.getElementById('Backpack');
+    const nextButton = document.getElementById('nextButton');
+    const checkNFTButton = document.getElementById('checkNFTButton');
+    const resultDiv = document.getElementById('result');
+
+    let connectedWallet = null;
+
+    backpackButton.addEventListener('click', async () => {
+      try {
+        const backpack = new Backpack();
+        await backpack.connect();
+        connectedWallet = backpack.getWalletAddress();
+        resultDiv.innerHTML = `Connected wallet: ${connectedWallet}`;
+        nextButton.style.display = 'none';
+        checkNFTButton.style.display = 'block';
+      } catch (error) {
+        console.error('Error connecting Backpack:', error);
+      }
+    });
+
+    // Обработчик события для кнопки "Далее"
+    nextButton.addEventListener('click', () => {
+      // Здесь будет логика перехода на следующий шаг
+      console.log('Переход на следующий шаг...');
+      // ...
+    });
+
+    // Обработчик события для кнопки "Проверить NFT"
+    checkNFTButton.addEventListener('click', () => {
+      // Здесь будет логика проверки NFT
+      console.log('Проверка NFT...');
+      // ...
+    });
         const isPhantomInstalled = window.phantom?.solana?.isPhantom;
 
         const connectPhantom = async () => {
