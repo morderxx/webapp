@@ -1,4 +1,3 @@
-emptiness, [13.07.2024 13:50]
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -8,6 +7,7 @@ emptiness, [13.07.2024 13:50]
     <script src="https://unpkg.com/@solana/wallet-adapter-react/dist/wallet-adapter-react.min.js"></script>
     <script src="https://unpkg.com/@solana/wallet-adapter-wallets/dist/wallet-adapter-wallets.min.js"></script>
     <script src="https://unpkg.com/@solana/wallet-adapter-solflare/dist/wallet-adapter-solflare.min.js"></script>
+    <script src="https://unpkg.com/@solana/wallet-adapter-backpack/dist/wallet-adapter-backpack.min.js"></script>
     <style>
         body {
             background-color: #000;
@@ -69,6 +69,8 @@ emptiness, [13.07.2024 13:50]
             <div class="wallet-label">Phantom</div>
             <img src="Solflare.png" alt="Solflare" id="Solflare"> 
             <div class="wallet-label">Solflare</div>
+            <img src="Backpack.png" alt="Backpack" id="Backpack">
+            <div class="wallet-label">Backpack</div>
         </div>
         <button id="nextButton">Далее</button>
         <button id="checkNFTButton" style="display: none;">Проверить NFT</button> 
@@ -90,7 +92,7 @@ emptiness, [13.07.2024 13:50]
             provider = window.phantom.solana;
             await provider.connect();
             publicKey = provider.publicKey.toString();
-            result.textContent = Ваш публичный ключ: ${publicKey};
+            result.textContent = `Ваш публичный ключ: ${publicKey}`;
             checkNFTButton.style.display = 'inline-block';
           } catch (error) {
             if (error.code === 4001) {
@@ -107,7 +109,7 @@ emptiness, [13.07.2024 13:50]
             const solflare = new solanaWalletAdapter.SolflareWalletAdapter();
             await solflare.connect();
             publicKey = solflare.publicKey.toString();
-            result.textContent = Ваш публичный ключ: ${publicKey};
+            result.textContent = `Ваш публичный ключ: ${publicKey}`;
             checkNFTButton.style.display = 'inline-block';
           } catch (error) {
             console.error('Ошибка при подключении к Solflare:', error);
@@ -115,11 +117,23 @@ emptiness, [13.07.2024 13:50]
           }
         };
 
-emptiness, [13.07.2024 13:50]
-const checkNFT = async () => {
+        const connectBackpack = async () => { 
+          try {
+            const backpack = new solanaWalletAdapter.BackpackWalletAdapter();
+            await backpack.connect();
+            publicKey = backpack.publicKey.toString();
+            result.textContent = `Ваш публичный ключ: ${publicKey}`;
+            checkNFTButton.style.display = 'inline-block';
+          } catch (error) {
+            console.error('Ошибка при подключении к Backpack:', error);
+            alert('Ошибка при подключении к Backpack. Попробуйте перезагрузить страницу.');
+          }
+        };
+
+        const checkNFT = async () => {
           if (publicKey) {
             try {
-              const response = await fetch(http://localhost:3000/check-nft?publicKey=${publicKey});
+              const response = await fetch(`http://localhost:3000/check-nft?publicKey=${publicKey}`);
               const data = await response.json();
 
               if (data.hasNFT) {
@@ -129,7 +143,7 @@ const checkNFT = async () => {
               }
             } catch (error) {
               console.error('Ошибка при проверке NFT:', error);
-              alert(Произошла ошибка при проверке NFT: ${error.message}. Попробуйте позже.);
+              alert(`Произошла ошибка при проверке NFT: ${error.message}. Попробуйте позже.`);
             }
           } else {
             alert('Сначала подключите кошелек!');
@@ -154,8 +168,10 @@ const checkNFT = async () => {
             await connectPhantom();
           } else if (selectedWallet === 'Solflare') { 
             await connectSolflare(); 
+          } else if (selectedWallet === 'Backpack') { 
+            await connectBackpack(); 
           } else {
-            result.textContent = Вы выбрали кошелек: ${selectedWallet};
+            result.textContent = `Вы выбрали кошелек: ${selectedWallet}`;
           }
         });
 
