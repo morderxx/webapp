@@ -1,11 +1,14 @@
+emptiness, [13.07.2024 13:50]
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-  <title>Backpack Integration</title>
-        <script src="https://unpkg.com/@solana/wallet-adapter-react/dist/wallet-adapter-react.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Выбор Кошелька</title>
+    <script src="https://unpkg.com/@solana/wallet-adapter-react/dist/wallet-adapter-react.min.js"></script>
     <script src="https://unpkg.com/@solana/wallet-adapter-wallets/dist/wallet-adapter-wallets.min.js"></script>
     <script src="https://unpkg.com/@solana/wallet-adapter-solflare/dist/wallet-adapter-solflare.min.js"></script>
-  <style>
+    <style>
         body {
             background-color: #000;
             color: #fff;
@@ -59,127 +62,108 @@
     </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Выберите ваш кошелек</h1>
-    <div class="wallets">
-      <img src="Phantom.png" alt="Phantom" id="Phantom">
-      <div class="wallet-label">Phantom</div>
-      <img src="Solflare.png" alt="Solflare" id="Solflare"> 
-      <div class="wallet-label">Solflare</div>
-      <img src="Backpack.png" alt="Backpack" id="Backpack"> 
-      <div class="wallet-label">Backpack</div>
+    <div class="container">
+        <h1>Выберите ваш кошелек</h1>
+        <div class="wallets">
+            <img src="Phantom.png" alt="Phantom" id="Phantom">
+            <div class="wallet-label">Phantom</div>
+            <img src="Solflare.png" alt="Solflare" id="Solflare"> 
+            <div class="wallet-label">Solflare</div>
+        </div>
+        <button id="nextButton">Далее</button>
+        <button id="checkNFTButton" style="display: none;">Проверить NFT</button> 
+        <div id="result"></div>
     </div>
-    <button id="nextButton">Далее</button>
-    <button id="checkNFTButton" style="display: none;">Проверить NFT</button> 
-    <div id="result"></div>
-  </div>
+    <script>
+        const nextButton = document.getElementById('nextButton');
+        const walletImages = document.querySelectorAll('.wallets img'); 
+        const result = document.getElementById('result');
+        const checkNFTButton = document.getElementById('checkNFTButton');
+        let selectedWallet = '';
+        let provider = null;
+        let publicKey = null;
 
-  <script type="module">
-    import Backpack from '@backpack-js/backpack';
+        const isPhantomInstalled = window.phantom?.solana?.isPhantom;
 
-    const nextButton = document.getElementById('nextButton');
-    const walletImages = document.querySelectorAll('.wallets img'); 
-    const result = document.getElementById('result');
-    const checkNFTButton = document.getElementById('checkNFTButton');
-    let selectedWallet = '';
-    let provider = null;
-    let publicKey = null;
-
-    const isPhantomInstalled = window.phantom?.solana?.isPhantom;
-
-    const connectPhantom = async () => {
-      try {
-        provider = window.phantom.solana;
-        await provider.connect();
-        publicKey = provider.publicKey.toString();
-        result.textContent = `Ваш публичный ключ: ${publicKey}`;
-        checkNFTButton.style.display = 'inline-block';
-      } catch (error) {
-        if (error.code === 4001) {
-          alert('Вы отказались предоставить доступ к ключу.');
-        } else {
-          console.error('Ошибка при подключении к Phantom:', error);
-          alert('Ошибка при подключении к Phantom. Попробуйте перезагрузить страницу.');
-        }
-      }
-    };
-
-    const connectSolflare = async () => { 
-      try {
-        const solflare = new solanaWalletAdapter.SolflareWalletAdapter();
-        await solflare.connect();
-        publicKey = solflare.publicKey.toString();
-        result.textContent = `Ваш публичный ключ: ${publicKey}`;
-        checkNFTButton.style.display = 'inline-block';
-      } catch (error) {
-        console.error('Ошибка при подключении к Solflare:', error);
-        alert('Ошибка при подключении к Solflare. Попробуйте перезагрузить страницу.');
-      }
-    };
-
-    const connectBackpack = async () => {
-      try {
-        const backpack = new Backpack();
-        await backpack.connect();
-        publicKey = backpack.getWalletAddress();
-        result.textContent = `Ваш публичный ключ: ${publicKey}`;
-        checkNFTButton.style.display = 'inline-block';
-      } catch (error) {
-        console.error('Ошибка при подключении к Backpack:', error);
-        alert('Ошибка при подключении к Backpack. Попробуйте перезагрузить страницу.');
-      }
-    };
-
-    const checkNFT = async () => {
-      if (publicKey) {
-        try {
-          const response = await fetch(`http://localhost:3000/check-nft?publicKey=${publicKey}`);
-          const data = await response.json();
-
-          if (data.hasNFT) {
-            alert('У вас есть NFT!');
-          } else {
-            alert('У вас нет NFT.');
+        const connectPhantom = async () => {
+          try {
+            provider = window.phantom.solana;
+            await provider.connect();
+            publicKey = provider.publicKey.toString();
+            result.textContent = Ваш публичный ключ: ${publicKey};
+            checkNFTButton.style.display = 'inline-block';
+          } catch (error) {
+            if (error.code === 4001) {
+              alert('Вы отказались предоставить доступ к ключу.');
+            } else {
+              console.error('Ошибка при подключении к Phantom:', error);
+              alert('Ошибка при подключении к Phantom. Попробуйте перезагрузить страницу.');
+            }
           }
-        } catch (error) {
-          console.error('Ошибка при проверке NFT:', error);
-          alert(`Произошла ошибка при проверке NFT: ${error.message}. Попробуйте позже.`);
-        }
-      } else {
-        alert('Сначала подключите кошелек!');
-      }
-    };
+        };
 
-    walletImages.forEach(wallet => { 
-      wallet.addEventListener('click', () => {
-        walletImages.forEach(w => w.classList.remove('selected')); 
-        wallet.classList.add('selected');
-        selectedWallet = wallet.alt;
-      });
-    });
+        const connectSolflare = async () => { 
+          try {
+            const solflare = new solanaWalletAdapter.SolflareWalletAdapter();
+            await solflare.connect();
+            publicKey = solflare.publicKey.toString();
+            result.textContent = Ваш публичный ключ: ${publicKey};
+            checkNFTButton.style.display = 'inline-block';
+          } catch (error) {
+            console.error('Ошибка при подключении к Solflare:', error);
+            alert('Ошибка при подключении к Solflare. Попробуйте перезагрузить страницу.');
+          }
+        };
 
-    nextButton.addEventListener('click', async () => {
-      if (selectedWallet === '') {
-        alert('Пожалуйста, выберите кошелек!');
-        return;
-      }
+emptiness, [13.07.2024 13:50]
+const checkNFT = async () => {
+          if (publicKey) {
+            try {
+              const response = await fetch(http://localhost:3000/check-nft?publicKey=${publicKey});
+              const data = await response.json();
 
-      if (selectedWallet === 'Phantom') {
-        await connectPhantom();
-      } else if (selectedWallet === 'Solflare') { 
-        await connectSolflare(); 
-      } else if (selectedWallet === 'Backpack') {
-        await connectBackpack();
-      } else {
-        result.textContent = `Вы выбрали кошелек: ${selectedWallet}`;
-      }
-    });
+              if (data.hasNFT) {
+                alert('У вас есть NFT!');
+              } else {
+                alert('У вас нет NFT.');
+              }
+            } catch (error) {
+              console.error('Ошибка при проверке NFT:', error);
+              alert(Произошла ошибка при проверке NFT: ${error.message}. Попробуйте позже.);
+            }
+          } else {
+            alert('Сначала подключите кошелек!');
+          }
+        };
 
-    document.addEventListener('DOMContentLoaded', () => {
-      const checkNFTButton = document.getElementById('checkNFTButton');
-      checkNFTButton.addEventListener('click', checkNFT);
-    });
+        walletImages.forEach(wallet => { 
+          wallet.addEventListener('click', () => {
+            walletImages.forEach(w => w.classList.remove('selected')); 
+            wallet.classList.add('selected');
+            selectedWallet = wallet.alt;
+          });
+        });
 
-  </script>
+        nextButton.addEventListener('click', async () => {
+          if (selectedWallet === '') {
+            alert('Пожалуйста, выберите кошелек!');
+            return;
+          }
+
+          if (selectedWallet === 'Phantom') {
+            await connectPhantom();
+          } else if (selectedWallet === 'Solflare') { 
+            await connectSolflare(); 
+          } else {
+            result.textContent = Вы выбрали кошелек: ${selectedWallet};
+          }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+          const checkNFTButton = document.getElementById('checkNFTButton');
+          checkNFTButton.addEventListener('click', checkNFT);
+        });
+
+    </script>
 </body>
 </html>
