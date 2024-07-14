@@ -117,6 +117,9 @@
 
         const connectBackpack = async () => {
           try {
+            if (!window.Backpack) {
+              throw new Error('Backpack library not loaded');
+            }
             const backpack = new window.Backpack.Backpack();
             await backpack.connect();
             publicKey = backpack.getWalletAddress();
