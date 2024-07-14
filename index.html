@@ -115,42 +115,23 @@
           }
         };
 
-        const connectBackpack = async () => {
-          try {
-            const ws = new WebSocket('wss://ws.backpack.exchange');
+        import Backpack from '@backpack-js/backpack';
 
-            ws.onopen = () => {
-              console.log('WebSocket подключен');
-              ws.send(JSON.stringify({
-                method: 'SUBSCRIBE',
-                params: ['depth.SOL_USDC']
-              }));
-            };
 
-            ws.onmessage = (event) => {
-              console.log('Получено сообщение:', event.data);
-              // Обработайте сообщение по вашему усмотрению
-            };
 
-            ws.onclose = () => {
-              console.log('WebSocket закрыт');
-              alert('WebSocket соединение закрыто. Попробуйте перезагрузить страницу.');
-            };
+const connectBackpack = async () => {
+  try {
+    const backpack = new Backpack();
+    await backpack.connect(); 
 
-            ws.onerror = (error) => {
-              console.error('WebSocket ошибка:', error);
-              alert('Ошибка при подключении к Backpack. Попробуйте перезагрузить страницу.');
-            };
-
-            // Пример: получение публичного ключа через запрос
-            publicKey = 'ВашПубличныйКлюч'; // Замените это на фактический процесс получения ключа
-            result.textContent = `Ваш публичный ключ: ${publicKey}`;
-            checkNFTButton.style.display = 'inline-block';
-          } catch (error) {
-            console.error('Ошибка при подключении к Backpack:', error);
-            alert('Ошибка при подключении к Backpack. Попробуйте перезагрузить страницу.');
-          }
-        };
+    publicKey = backpack.getWalletAddress(); 
+    result.textContent = `Ваш публичный ключ: ${publicKey}`;
+    checkNFTButton.style.display = 'inline-block';
+  } catch (error) {
+    console.error('Ошибка при подключении к Backpack:', error);
+    alert('Ошибка при подключении к Backpack. Попробуйте перезагрузить страницу.');
+  }
+};
 
         const checkNFT = async () => {
           if (publicKey) {
