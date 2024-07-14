@@ -7,7 +7,7 @@
     <script src="https://unpkg.com/@solana/wallet-adapter-react/dist/wallet-adapter-react.min.js"></script>
     <script src="https://unpkg.com/@solana/wallet-adapter-wallets/dist/wallet-adapter-wallets.min.js"></script>
     <script src="https://unpkg.com/@solana/wallet-adapter-solflare/dist/wallet-adapter-solflare.min.js"></script>
-    <script src="https://unpkg.com/@solana/wallet-adapter-backpack/dist/wallet-adapter-backpack.min.js"></script>
+    <script src="https://unpkg.com/@backpack-js/backpack/dist/backpack.min.js"></script>
     <style>
         body {
             background-color: #000;
@@ -77,7 +77,6 @@
         <div id="result"></div>
     </div>
     <script type="module">
-        import Backpack from '@backpack-js/backpack';
         const nextButton = document.getElementById('nextButton');
         const walletImages = document.querySelectorAll('.wallets img'); 
         const result = document.getElementById('result');
@@ -115,13 +114,12 @@
             alert('Ошибка при подключении к Solflare. Попробуйте перезагрузить страницу.');
           }
         };
-        
-         const connectBackpack = async () => {
-          try {
-            const backpack = new Backpack();
-            await backpack.connect(); 
 
-            publicKey = backpack.getWalletAddress(); 
+        const connectBackpack = async () => {
+          try {
+            const backpack = new window.Backpack.Backpack();
+            await backpack.connect();
+            publicKey = backpack.getWalletAddress();
             result.textContent = `Ваш публичный ключ: ${publicKey}`;
             checkNFTButton.style.display = 'inline-block';
           } catch (error) {
@@ -135,7 +133,6 @@
             try {
               const response = await fetch(`http://localhost:3000/check-nft?publicKey=${publicKey}`);
               const data = await response.json();
-
               if (data.hasNFT) {
                 alert('У вас есть NFT!');
               } else {
