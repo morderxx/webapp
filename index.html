@@ -115,21 +115,6 @@
           }
         };
 
-        const connectBackpack = async () => {
-        import Backpack from '@backpack-js/backpack';
-          try {
-            const backpack = new Backpack();
-            await backpack.connect(); 
-
-            publicKey = backpack.getWalletAddress(); 
-            result.textContent = `Ваш публичный ключ: ${publicKey}`;
-            checkNFTButton.style.display = 'inline-block';
-          } catch (error) {
-            console.error('Ошибка при подключении к Backpack:', error);
-            alert('Ошибка при подключении к Backpack. Попробуйте перезагрузить страницу.');
-          }
-        };
-
         const checkNFT = async () => {
           if (publicKey) {
             try {
